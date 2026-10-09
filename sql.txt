@@ -1,0 +1,120 @@
+-- ============================================
+-- BÀI THỰC HÀNH: STORED PROCEDURE TRONG MYSQL
+-- Database: classicmodels
+-- ============================================
+
+USE classicmodels;
+
+-- ============================================
+-- PHẦN 1: PROCEDURE CƠ BẢN
+-- ============================================
+
+-- Xóa nếu đã tồn tại
+DROP PROCEDURE IF EXISTS findAllCustomers;
+
+-- Tạo Procedure lấy tất cả khách hàng
+DELIMITER //
+
+CREATE PROCEDURE findAllCustomers()
+BEGIN
+    SELECT * FROM customers;
+END //
+
+DELIMITER ;
+
+-- Gọi Procedure
+CALL findAllCustomers();
+
+-- ============================================
+-- PHẦN 2: PROCEDURE CÓ ĐIỀU KIỆN
+-- ============================================
+
+-- Xóa nếu đã tồn tại
+DROP PROCEDURE IF EXISTS findCustomer175;
+
+-- Tạo Procedure chỉ lấy customer 175
+DELIMITER //
+
+CREATE PROCEDURE findCustomer175()
+BEGIN
+    SELECT * FROM customers WHERE customerNumber = 175;
+END //
+
+DELIMITER ;
+
+-- Gọi Procedure
+CALL findCustomer175();
+
+-- ============================================
+-- PHẦN 3: PROCEDURE CÓ THAM SỐ
+-- ============================================
+
+-- Xóa nếu đã tồn tại
+DROP PROCEDURE IF EXISTS findCustomersByCountry;
+
+-- Tạo Procedure tìm theo quốc gia
+DELIMITER //
+
+CREATE PROCEDURE findCustomersByCountry(IN country_name VARCHAR(50))
+BEGIN
+    SELECT 
+        customerNumber,
+        customerName,
+        contactFirstName,
+        contactLastName,
+        phone,
+        city,
+        country
+    FROM customers
+    WHERE country = country_name;
+END //
+
+DELIMITER ;
+
+-- Gọi Procedure với tham số
+CALL findCustomersByCountry('USA');
+CALL findCustomersByCountry('France');
+
+-- ============================================
+-- PHẦN 4: PROCEDURE CÓ NHIỀU THAM SỐ
+-- ============================================
+
+-- Xóa nếu đã tồn tại
+DROP PROCEDURE IF EXISTS findCustomersByCityAndCountry;
+
+-- Tạo Procedure tìm theo thành phố + quốc gia
+DELIMITER //
+
+CREATE PROCEDURE findCustomersByCityAndCountry(
+    IN city_name VARCHAR(50),
+    IN country_name VARCHAR(50)
+)
+BEGIN
+    SELECT 
+        customerNumber,
+        customerName,
+        contactFirstName,
+        contactLastName,
+        city,
+        country
+    FROM customers
+    WHERE city = city_name AND country = country_name;
+END //
+
+DELIMITER ;
+
+-- Gọi Procedure
+CALL findCustomersByCityAndCountry('NYC', 'USA');
+
+-- ============================================
+-- PHẦN 5: KIỂM TRA DANH SÁCH PROCEDURE
+-- ============================================
+SHOW PROCEDURE STATUS WHERE db = 'classicmodels';
+
+-- ============================================
+-- PHẦN 6: XÓA PROCEDURE
+-- ============================================
+-- DROP PROCEDURE IF EXISTS findAllCustomers;
+-- DROP PROCEDURE IF EXISTS findCustomer175;
+-- DROP PROCEDURE IF EXISTS findCustomersByCountry;
+-- DROP PROCEDURE IF EXISTS findCustomersByCityAndCountry;
